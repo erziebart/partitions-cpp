@@ -33,10 +33,10 @@ namespace partition
 		unsigned int prod() const;
 
 		// maximum element
-		unsigned int max() const;
+		unsigned int min() const;
 
 		// minimum element
-		unsigned int min() const;
+		unsigned int max() const;
 
 
 		// comparison

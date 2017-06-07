@@ -54,19 +54,6 @@ namespace partition
 		friend Partition operator+(const Partition& lhs, const Partition& rhs);
 
 
-		// factorial of each element
-		void fact();
-
-		// add a non-negative integer to each element
-		void add(unsigned int value);
-
-		// multiply each element by a non-negative integer
-		void mult(unsigned int value);
-
-		// change each element of the Partition according to some rule
-		void forEach(unsigned int(*fn)(unsigned int e));
-
-
 		// returns the order of the Partition
 		unsigned int order() const;
 
@@ -88,21 +75,35 @@ namespace partition
 	};
 
 
-	struct ZeroPartitionException : public exception {
-		const char* what() const throw() {
-			return "Invalid Operation for Zero Partition";
-		}
+	class ZeroPartitionException : public runtime_error {
+		public:
+			ZeroPartitionException(const char* what_arg = "Invalid Operation for Zero Partition") 
+				: runtime_error(what_arg) {}
 	};
 
 
+	// new Partition with factorial of each element
+	Partition fact(const Partition& p);
+
+	// new Partition with non-negative integer added to each element
+	Partition add(const Partition& p, unsigned int value);
+
+	// new Partition with each element multiplied by a non-negative integer
+	Partition mult(const Partition& p, unsigned int value);
+
+	// new Partition with each element of the Partition changed according to some rule
+	typedef unsigned int(*Rule) (unsigned int e);
+	Partition forEach(const Partition& p, Rule fn);
+
+
 	// partition of a Partition
-	static Partition& part(Partition& p);
+	Partition part(Partition& p);
 
 	// partition of an array
 	template <typename T>
-	static Partition& part(const T[]);
+	Partition part(const T[]);
 
 	// partition of a container
 	template <typename Iter>
-	static Partition& part(Iter it, Iter end);
+	Partition part(Iter it, Iter end);
 }

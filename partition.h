@@ -1,6 +1,7 @@
 #pragma once
 
-#include<vector>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -14,13 +15,10 @@ namespace partition
 		Elements arr;
 
 	public:
-		Partition(unsigned int arr[] = {});
+		// constructor
+		Partition(unsigned int arr[] = {}, size_t size = 0);
 
-		~Partition();
-
-		Partition(const Partition& p);
-
-		Partition& operator=(const Partition& p);
+		// implicit destructor, copy constructor, and copy assignment have desired behavior
 
 
 		// returns true if the Partition is the zero partition
@@ -43,16 +41,18 @@ namespace partition
 
 
 		// comparison
-		friend bool operator==(const Partition& p1, const Partition& p2);
+		friend bool operator==(const Partition& lhs, const Partition& rhs);
 
 		// appending
-		Partition& operator+=(Partition& p);
+		Partition& operator+=(const Partition& rhs);
+
+		Partition& operator+=(unsigned int rhs);
 
 		// printing
 		friend ostream& operator<<(ostream& os, const Partition& p);
 
 		// concatenation
-		friend Partition operator+(const Partition& p1, const Partition& p2);
+		friend Partition operator+(const Partition& lhs, const Partition& rhs);
 
 
 		// factorial of each element

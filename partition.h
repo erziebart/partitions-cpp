@@ -32,10 +32,10 @@ namespace partition
 		// product of the Partition
 		unsigned int prod() const;
 
-		// maximum element
+		// minimum element
 		unsigned int min() const;
 
-		// minimum element
+		// maximum element
 		unsigned int max() const;
 
 

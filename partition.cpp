@@ -1,4 +1,5 @@
 #include "partition.h"
+#include "factorial.h"
 #include <algorithm>
 #include <iostream>
 
@@ -90,7 +91,7 @@ namespace partition
 
 	Partition& Partition::operator+=(unsigned int rhs) {
 		Elements result;
-		int i = 0;
+		unsigned int i = 0;
 		
 		unsigned int e;
 		while (i < this->arr.size() && (e = this->arr[i]) < rhs) {
@@ -132,6 +133,43 @@ namespace partition
 
 		sort(result.arr.begin(), result.arr.end());
 
+		return result;
+	}
+
+	Partition fact(const Partition& p) {
+		Partition result = p;
+		for (auto it = result.begin(); it != result.end(); ++it) {
+			*it = combinatorics::factorial(*it);
+		}
+		return result;
+	}
+
+	Partition add(const Partition& p, unsigned int value) {
+		Partition result = p;
+		for (auto it = result.begin(); it != result.end(); ++it) {
+			*it += value;
+		}
+		return result;
+	}
+
+	Partition mult(const Partition& p, unsigned int value) {
+		if (value == 0) {
+			Partition result;
+			return result;
+		}
+
+		Partition result = p;
+		for (auto it = result.begin(); it != result.end(); ++it) {
+			*it *= value;
+		}
+		return result;
+	}
+
+	Partition forEach(const Partition& p, Rule fn) {
+		Partition result = p;
+		for (auto it = result.begin(); it != result.end(); ++it) {
+			*it = fn(*it);
+		}
 		return result;
 	}
 }

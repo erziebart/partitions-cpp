@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -41,6 +42,9 @@ namespace partition
 
 		// comparison
 		friend bool operator==(const Partition& lhs, const Partition& rhs);
+
+		// negated comparison
+		friend bool operator!=(const Partition& lhs, const Partition& rhs) { return !(lhs == rhs); }
 
 		// appending
 		Partition& operator+=(const Partition& rhs);
@@ -101,9 +105,79 @@ namespace partition
 
 	// partition of an array
 	template <typename T>
-	Partition part(const T[]);
+	Partition part(const T arr[], size_t size) {
+		if (arr == NULL || !size) {
+			Partition result;
+			return result;
+		}
+		else {
+			unsigned int *freq = new unsigned int[size];
+			memset(freq, 0, size * sizeof(unsigned int));
+
+			vector<T> vals;
+			for (unsigned int i = 0; i < size; i++) {
+				T cur = arr[i];
+				unsigned int index;
+
+				// check if already found
+				auto it = find(vals.begin(), vals.end(), cur);
+				if (it != vals.end()) { // found
+					index = distance(vals.begin(), it);
+				}
+				else { // not found
+					vals.push_back(cur);
+					index = vals.size() - 1;
+				}
+
+				freq[index]++;
+			}
+
+			Partition result(freq, size);
+			delete[] freq;
+			return result;
+		}
+	}
 
 	// partition of a container
-	template <typename Iter>
-	Partition part(Iter it, Iter end);
+	template <typename Iterator>
+	Partition part(Iterator begin, Iterator end) {
+		if (begin == NULL || end == NULL || begin == end) {
+			Partition result;
+			return result;
+		}
+		else {
+			size_t size = distance(begin, end);
+			unsigned int *freq = new unsigned int[size];
+			memset(freq, 0, size * sizeof(unsigned int));
+			
+			vector<Iterator> vals;
+			for (auto i = begin; i != end; ++i) {
+				unsigned int index;
+
+				// check if already found
+				bool found = false;
+				auto j = vals.begin();
+				for (; j != vals.end(); ++j) {
+					if (**j == *i) {
+						found = true;
+						break;
+					}
+				}
+				
+				if (found) {
+					index = distance(vals.begin(), j);
+				}
+				else {
+					vals.push_back(i);
+					index = vals.size() - 1;
+				}
+
+				freq[index]++;
+			}
+
+			Partition result(freq, size);
+			delete[] freq;
+			return result;
+		}
+	}
 }

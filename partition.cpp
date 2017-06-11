@@ -8,15 +8,17 @@ using namespace std;
 namespace partition
 {
 	Partition::Partition(unsigned int arr[], size_t size) {
-		// add elements
-		for (unsigned int i = 0; i < size; i++) {
-			if (arr[i] != 0) {
-				this->arr.push_back(arr[i]);
+		if (arr) { // not NULL pointer
+				   // add elements
+			for (unsigned int i = 0; i < size; i++) {
+				if (arr[i] != 0) {
+					this->arr.push_back(arr[i]);
+				}
 			}
-		}
 
-		// sort elements
-		sort(this->begin(), this->end());
+			// sort elements
+			sort(this->begin(), this->end());
+		}
 	}
 
 	unsigned int Partition::sum() const {
@@ -90,6 +92,10 @@ namespace partition
 	}
 
 	Partition& Partition::operator+=(unsigned int rhs) {
+		if (!rhs) { // appending 0
+			return *this;
+		}
+
 		Elements result;
 		unsigned int i = 0;
 		
@@ -154,6 +160,7 @@ namespace partition
 
 	Partition mult(const Partition& p, unsigned int value) {
 		if (value == 0) {
+			// return the zero partition
 			Partition result;
 			return result;
 		}
@@ -171,5 +178,51 @@ namespace partition
 			*it = fn(*it);
 		}
 		return result;
+	}
+
+	Partition part(Partition& p) {
+		if (p.isZero()) {
+			// return zero partition
+			Partition result;
+			return result;
+		}
+		else {
+			size_t size = p.count();
+			unsigned int *freq = new unsigned int[size];
+			memset(freq, 0, size*sizeof(unsigned int));
+
+			unsigned int cur = 0;
+			unsigned int lastVal = p.min(); // first element
+			for (auto it = p.begin(); it != p.end(); ++it) {
+				if (*it != lastVal) {
+					cur++;
+				}
+				freq[cur]++;
+				lastVal = *it;
+			}
+
+			Partition result(freq, size);
+			delete[] freq;
+			return result;
+		}
+	}
+
+	unsigned int Partition::order() const {
+		if (isZero()) {
+			throw ZeroPartitionException();
+		}
+		else {
+			unsigned int arr[] = { 1 };
+			Partition basis(arr, 1);
+			unsigned int answer = 0;
+			Partition copy(*this);
+
+			while (copy != basis) {
+				copy = part(copy);
+				answer++;
+			}
+
+			return answer;
+		}
 	}
 }

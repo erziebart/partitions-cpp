@@ -141,7 +141,7 @@ namespace partition
 	// partition of a container
 	template <typename Iterator>
 	Partition part(Iterator begin, Iterator end) {
-		if (begin == NULL || end == NULL || begin == end) {
+		if (begin == end) {
 			Partition result;
 			return result;
 		}
